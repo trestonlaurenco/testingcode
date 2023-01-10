@@ -1,0 +1,88 @@
+<!-- index.html -->
+<html>
+<head>
+  <title>Snake</title>
+  <style>
+    /* Add some style to the Snake game */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #333;
+    }
+    canvas {
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" width="400" height="400"></canvas>
+  <script>
+    // Set up the canvas
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+
+    // Set up the snake
+    let snake = [{ x: 150, y: 150 }, { x: 140, y: 150 }, { x: 130, y: 150 }];
+    let dx = 10;
+    let dy = 0;
+
+    // Set up the food
+    let food = { x: 300, y: 300 };
+
+    // Set up the score
+    let score = 0;
+
+    // Set up the game loop
+    function gameLoop() {
+      requestAnimationFrame(gameLoop);
+
+      // Move the snake
+      snake.forEach(segment => {
+        segment.x += dx;
+        segment.y += dy;
+      });
+
+      // Check if the snake has eaten the food
+      if (snake[0].x === food.x && snake[0].y === food.y) {
+        score++;
+        food = { x: Math.floor(Math.random() * 40) * 10, y: Math.floor(Math.random() * 40) * 10 };
+      } else {
+        snake.pop();
+      }
+
+      // Check if the snake has hit the wall or itself
+      if (
+        snake[0].x < 0 ||
+        snake[0].x >= canvas.width ||
+        snake[0].y < 0 ||
+        snake[0].y >= canvas.height ||
+        snake.slice(1).some(segment => segment.x === snake[0].x && segment.y === snake[0].y)
+      ) {
+        alert('Game Over');
+        snake = [{ x: 150, y: 150 }, { x: 140, y: 150 }, { x: 130, y: 150 }];
+        dx = 10;
+        dy = 0;
+        score = 0;
+      }
+
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the food
+      ctx.fillStyle = '#f00';
+      ctx.fillRect(food.x, food.y, 10, 10);
+
+      // Draw the snake
+      ctx.fillStyle = '#0f0';
+      snake.forEach(segment => {
+        ctx.fillRect(segment.x, segment.y, 10, 10);
+      });
+
+      // Draw the score
+      ctx.fillStyle = '#fff';
+      ctx.font = '20px Arial';
+      ctx.fillText(`Score: ${score}`, 10, 30);
+    }
+
+    // Set up keyboard controls
+    document.addEvent
